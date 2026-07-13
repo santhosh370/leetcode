@@ -12,12 +12,11 @@ class Solution {
                 dp[i]=Math.min(dp[i],dp[i-count]+1);
             }
         }
-        if(dp[amount]<=amount)
+        if(dp[amount]>amount)
         {
-            return dp[amount];
+            return -1;
+            
         }
-
-        return -1;
-        
+        return dp[amount];
     }
 }

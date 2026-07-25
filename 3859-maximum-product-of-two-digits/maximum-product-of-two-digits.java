@@ -6,7 +6,7 @@ class Solution {
         while(n>0)
         {
             int digit=n%10;
-            n/=10;
+          
 
 
             if(digit>a)
@@ -19,6 +19,7 @@ class Solution {
             {
                 b=digit;
             }
+            n/=10;
         }
         return a*b;
         

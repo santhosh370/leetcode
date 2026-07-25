@@ -1,27 +1,20 @@
+import java.util.*;
+
 class Solution {
     public int maxProduct(int n) {
-        int a=0;
-        int b=0;
-
-        while(n>0)
-        {
-            int digit=n%10;
-          
-
-
-            if(digit>a)
-            {
-                b=a;
-                a=digit;
-            }
-
-            else if(digit>b)
-            {
-                b=digit;
-            }
-            n/=10;
-        }
-        return a*b;
+        ArrayList<Integer> list = new ArrayList<>();
         
+        // 1. n oda ellam list ah eduthu list la podu
+        while(n > 0) {
+            list.add(n % 10);
+            n = n / 10;
+        }
+        
+        // 2. Sort pannu - chinna la irundhu periya varaikum
+        Collections.sort(list);
+        
+        // 3. Kadasi 2 elements ah eduthu multiply pannu
+        int size = list.size();
+        return list.get(size - 1) * list.get(size - 2);
     }
 }

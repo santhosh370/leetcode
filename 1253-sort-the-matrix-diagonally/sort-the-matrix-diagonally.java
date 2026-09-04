@@ -15,7 +15,7 @@ class Solution {
         return nums;
     }
 
-    public void sortmatrix(int[][]nums,int i,int j)
+    private void sortmatrix(int[][]nums,int i,int j)
     {
         List<Integer>list=new ArrayList<>();
 

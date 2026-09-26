@@ -6,7 +6,7 @@ class Solution {
         {
             sum+=nums[i];
         }
-        int max=sum;
+        double max=sum;
 
         for(int i=k;i<n;i++)
         {
@@ -14,7 +14,7 @@ class Solution {
 
             max=Math.max(max,sum);
         }
-
-        return (double) max/k;
+        
+        return max/k;
     }
 }

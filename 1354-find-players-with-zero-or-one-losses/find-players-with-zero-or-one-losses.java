@@ -1,16 +1,16 @@
 class Solution {
-    public List<List<Integer>> findWinners(int[][] matches) {
-        int n=matches.length;
+    public List<List<Integer>> findWinners(int[][] nums) {
+        int n=nums.length;
         int[]arr=new int[1000001];
-        boolean[]boolarr=new boolean[1000001];
+        boolean[]bool_arr=new boolean[1000001];
 
         for(int i=0;i<n;i++)
         {
-            int win=matches[i][0];
-            int loss=matches[i][1];
+            int win=nums[i][0];
+            int loss=nums[i][1];
 
-            boolarr[win]=true;
-            boolarr[loss]=true;
+            bool_arr[win]=true;
+            bool_arr[loss]=true;
 
             arr[loss]++;
         }
@@ -20,7 +20,7 @@ class Solution {
 
         for(int i=1;i<=100000;i++)
         {
-            if(!boolarr[i])
+            if(!bool_arr[i])
             {
                 continue;
             }

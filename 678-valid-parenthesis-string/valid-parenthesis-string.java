@@ -1,34 +1,34 @@
 class Solution {
     public boolean checkValidString(String s1) {
-        int left=0,right=0;
+        int min=0,max=0;
 
         for(char ch:s1.toCharArray())
         {
             if(ch=='(')
             {
-                left++;
-                right++;
+                min++;
+                max++;
             }
             else if(ch==')')
             {
-                left--;
-                right--;
+                min--;
+                max--;
             }
             else
             {
-                left--;
-                right++;
+                min--;
+                max++;
             }
 
-            if(right<0)
+            if(min<0)
+            {
+                min=0;
+            }
+            if(max<0)
             {
                 return false;
             }
-            if(left<0)
-            {
-                left=0;
-            }
         }
-        return left==0;
+        return min==0;
     }
 }

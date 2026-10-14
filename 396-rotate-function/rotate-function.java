@@ -1,21 +1,21 @@
 class Solution {
     public int maxRotateFunction(int[] nums) {
-        int n = nums.length;
-        long sum = 0;
-        long f = 0;
+        int n=nums.length;
+        long sum=0;
+        long san=0;
         
-        for (int i = 0; i < n; i++) {
-            sum += nums[i];
-            f += (long) i * nums[i];
+        for (int i=0;i<n;i++) {
+            sum+=nums[i];
+            san +=(long)i*nums[i];
         }
         
-        long maxVal = f;
+        long max=san;
         
-        for (int k = 1; k < n; k++) {
-            f = f + sum - (long) n * nums[n - k];
-            maxVal = Math.max(maxVal, f);
+        for (int k=1;k<n;k++) {
+            san =san+sum-(long)n*nums[n - k];
+            max=Math.max(max,san);
         }
         
-        return (int) maxVal;
+        return (int) max;
     }
 }

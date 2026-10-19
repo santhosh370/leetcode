@@ -7,11 +7,11 @@ class Solution {
         int sum=0,count=0;
         for(int i=1;i<=n;i++){
             if((!set.contains(i))){
-                ++count;
+                count++;
                 sum+=i;
             }
             if(sum>maxSum){
-                --count;
+                count--;
                 break;
             }
         }

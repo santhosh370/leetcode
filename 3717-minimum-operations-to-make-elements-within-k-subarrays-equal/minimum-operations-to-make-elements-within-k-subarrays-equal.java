@@ -1,104 +1,80 @@
 class Solution {
-    private long[] cnt, sum;
-    private int m;
-
-    private void update(int p, int delta, int value) {
-        for (; p <= m; p += p & -p) {
-            cnt[p] += delta;
-            sum[p] += (long) delta * value;
+    class MultiSet {
+        TreeMap<Integer,Integer> map=new TreeMap<>();
+        int size=0;
+        long sum=0;
+        void add(int val) {
+            map.put(val,map.getOrDefault(val,0)+1);
+            size++;
+            sum+=val;
+        }
+        void remove(int val) {
+            int count=map.get(val);
+            if(count==1)map.remove(val);
+            else map.put(val,count-1);
+            size--;
+            sum-=val;
+        }
+        int first() {
+            return map.firstKey();
+        }
+        int last() {
+            return map.lastKey();
         }
     }
-
-    private long[] query(int p) {
-        long c = 0, s = 0;
-        for (; p > 0; p -= p & -p) {
-            c += cnt[p];
-            s += sum[p];
+    MultiSet left=new MultiSet();
+    MultiSet right=new MultiSet();
+    void balance() {
+        while(left.size>right.size+1) {
+            int val=left.last();
+            left.remove(val);
+            right.add(val);
         }
-        return new long[]{c, s};
+        while(left.size<right.size) {
+            int val=right.first();
+            right.remove(val);
+            left.add(val);
+        }
     }
-
-    private int kth(int rank) {
-        int p = 0;
-        int step = Integer.highestOneBit(m);
-
-        for (; step > 0; step >>= 1) {
-            int np = p + step;
-            if (np <= m && cnt[np] < rank) {
-                rank -= (int) cnt[np];
-                p = np;
-            }
-        }
-        return p + 1;
+    void add(int val) {
+        if(left.size==0||val<=left.last())left.add(val);
+        else right.add(val);
+        balance();
     }
-
-    public long minOperations(int[] nums, int x, int k) {
-        int n = nums.length;
-        if ((long) x * k > n) return -1;
-
-        int[] sorted = nums.clone();
-        Arrays.sort(sorted);
-
-        int[] vals = new int[n];
-        m = 0;
-
-        for (int v : sorted) {
-            if (m == 0 || vals[m - 1] != v) {
-                vals[m++] = v;
+    void remove(int val) {
+        if(left.map.containsKey(val))left.remove(val);
+        else right.remove(val);
+        balance();
+    }
+    long cost() {
+        long median=left.last();
+        return median*left.size-left.sum+right.sum-median*right.size;
+    }
+    public long minOperations(int[] nums,int x,int k) {
+        int n=nums.length;
+        long[] costs=new long[n-x+1];
+        for(int i=0;i<x;i++)add(nums[i]);
+        costs[0]=cost();
+        for(int i=x;i<n;i++) {
+            remove(nums[i-x]);
+            add(nums[i]);
+            costs[i-x+1]=cost();
+        }
+        long INF=Long.MAX_VALUE/4;
+        long[][] dp=new long[n+1][k+1];
+        for(int i=0;i<=n;i++)Arrays.fill(dp[i],INF);
+        dp[0][0]=0;
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<=k;j++) {
+                if(dp[i][j]==INF)continue;
+                dp[i+1][j]=Math.min(dp[i+1][j],dp[i][j]);
+                if(j<k&&i+x<=n) {
+                    dp[i+x][j+1]=Math.min(dp[i+x][j+1],dp[i][j]+costs[i]);
+                }
             }
         }
-
-        cnt = new long[m + 1];
-        sum = new long[m + 1];
-
-        long[] ops = new long[n];
-        long total = 0;
-
-        for (int i = 0; i < n; i++) {
-            int p = Arrays.binarySearch(vals, 0, m, nums[i]) + 1;
-            update(p, 1, nums[i]);
-            total += nums[i];
-
-            if (i >= x) {
-                int old = Arrays.binarySearch(
-                    vals, 0, m, nums[i - x]
-                ) + 1;
-
-                update(old, -1, nums[i - x]);
-                total -= nums[i - x];
-            }
-
-            if (i >= x - 1) {
-                int midPos = kth((x + 1) / 2);
-                long mid = vals[midPos - 1];
-
-                long[] left = query(midPos);
-                long lc = left[0], ls = left[1];
-                long rc = x - lc, rs = total - ls;
-
-                ops[i] = mid * lc - ls + rs - mid * rc;
-            }
-        }
-
-        long INF = Long.MAX_VALUE / 4;
-        long[] pre = new long[n + 1];
-        long[] cur = new long[n + 1];
-
-        for (int j = 1; j <= k; j++) {
-            Arrays.fill(cur, INF);
-
-            for (int i = j * x; i <= n; i++) {
-                cur[i] = Math.min(
-                    cur[i - 1],
-                    pre[i - x] + ops[i - 1]
-                );
-            }
-
-            long[] temp = pre;
-            pre = cur;
-            cur = temp;
-        }
-
-        return pre[n];
+        long ans=INF;
+        for(int i=0;i<=n;i++)ans=Math.min(ans,dp[i][k]);
+        return ans;
     }
 }
